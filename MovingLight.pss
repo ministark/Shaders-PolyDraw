@@ -7,7 +7,7 @@ if (numframes == 0)
 t = klock();
 glbindtexture(0);
 glUniform4f(time,cos(t/2),sin(t/2),t,0);
-nq = 20;
+nq = 100;
 for(i = 0; i < nq; i++){
    for(j = 0; j  < nq; j++){
       glBegin(GL_QUADS);
@@ -30,6 +30,8 @@ void main ()
 {
    gl_Position = ftransform();
    p = gl_Position;
+   gl_Position.y += 0.1*sin(5.0*gl_Position.x + 5*time.z);
+  // gl_Position.x += 0.1*sin(5.0*gl_Position.y + 5*time.z);
    v = gl_Vertex;
    n = gl_Normal;
    c = gl_Color;
