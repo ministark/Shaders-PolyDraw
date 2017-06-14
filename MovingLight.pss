@@ -1,18 +1,24 @@
    //Host code (EVAL)
 if (numframes == 0)
 {
-   glsettex(0,"b2dr_sph.jpg"); static time; time = glGetUniformLoc("time");
+   glsettex(0,"earth.jpg"); static time; time = glGetUniformLoc("time");
 }
 
 t = klock();
 glbindtexture(0);
 glUniform4f(time,cos(t/2),sin(t/2),t,0);
-glBegin(GL_QUADS);
-glTexCoord(0,0); glVertex(-2, 2,-3);
-glTexCoord(1,0); glVertex(+2, 2,-3);
-glTexCoord(1,1); glVertex(+2,-2,-3);
-glTexCoord(0,1); glVertex(-2,-2,-3);
-glEnd();
+ 
+for(i = 0; i < 21; i++){
+   for(j = 0; j  < 20; j++){
+      glBegin(GL_QUADS);
+      glTexCoord(i/20,j/20); glVertex(-2 +i/5, 2,-3); 
+      glTexCoord((i+1)/20,j/20); glVertex(-2 + i/5 + 0.2, 2,-3); 
+      glTexCoord((i+1)/20,(j+1)/20); glVertex(-2 + i/5 + 0.2, 2-j/5-0.2,-3); 
+      glTexCoord(i/20,(j+1)/20); glVertex(-2,2-j/5-0.2,-3); 
+      glEnd();
+   }
+}
+
 printg(xres-64,0,0xffffff,"%.2f fps",numframes/t);
 
 @v:vertex_shader //================================
