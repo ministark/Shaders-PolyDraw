@@ -7,31 +7,35 @@ if (numframes == 0)
 t = klock();
 glbindtexture(0);
 glUniform4f(time,cos(t/2),sin(t/2),t,0);
- 
-for(i = 0; i < 21; i++){
-   for(j = 0; j  < 20; j++){
+nq = 100;
+for(i = 0; i < nq; i++){
+   for(j = 0; j  < nq; j++){
       glBegin(GL_QUADS);
-      glTexCoord(i/20,j/20); glVertex(-2 +i/5, 2,-3); 
-      glTexCoord((i+1)/20,j/20); glVertex(-2 + i/5 + 0.2, 2,-3); 
-      glTexCoord((i+1)/20,(j+1)/20); glVertex(-2 + i/5 + 0.2, 2-j/5-0.2,-3); 
-      glTexCoord(i/20,(j+1)/20); glVertex(-2,2-j/5-0.2,-3); 
+      x = i/nq; y =j/nq;d = 1/nq;
+      glTexCoord(x,y); glVertex(-2 +x*4, 2 - y*4,-3); 
+      glTexCoord(x+d, y); glVertex(-2 + x*4 + 4/nq, 2 -y*4,-3); 
+      glTexCoord(x+d,y+d); glVertex(-2 + x*4 + 4/nq, 2-y*4 -4/nq,-3); 
+      glTexCoord(x,y+d); glVertex(-2 + x*4,2-y*4-4/nq,-3); 
       glEnd();
    }
 }
 
-printg(xres-64,0,0xffffff,"%.2f fps",numframes/t);
+printg(xres-64,0,0xffffff,"%.2f fps",x);
 
 @v:vertex_shader //================================
 varying vec4 p, v, c, t;
 varying vec3 n;
+uniform vec4 time;
 void main ()
 {
    gl_Position = ftransform();
    p = gl_Position;
+   gl_Position.y += 0.1*sin(5.0*gl_Position.x + 5*time.z);
+  // gl_Position.x += 0.1*sin(5.0*gl_Position.y + 5*time.z);
    v = gl_Vertex;
    n = gl_Normal;
    c = gl_Color;
-   t = gl_MultiTexCoord0;
+   gl_TexCoord[0] = gl_MultiTexCoord0;
 }
 
 @f:fragment_shader //================================
@@ -41,5 +45,5 @@ uniform sampler2D tex0;
 uniform vec4 time;
 void main ()
 {
-   gl_FragColor = texture2D(tex0,t)*(0.5*sin(1.0*v.x + 2*time.z) + 1.5);
+   gl_FragColor = texture2D(tex0,gl_TexCoord[0].st)*(0.5*sin(1.0*v.x + 2*time.z) + 1.5);
 }
