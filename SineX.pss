@@ -1,0 +1,40 @@
+   //Host code (EVAL)
+if (numframes == 0)
+{
+   glsettex(0,"b2dr_sph.jpg"); static env; env = glGetUniformLoc("env");
+}
+
+t = klock();
+glbindtexture(0);
+glUniform4f(env,cos(t/2),sin(t/2),0,0);
+glUniform4f(env+1,noise(t,0.5)+1,noise(t,1.5)+1,noise(t,2.5)+1,1);
+glBegin(GL_QUADS);
+glTexCoord(0,0); glVertex(-2, 2,-3);
+glTexCoord(1,0); glVertex(+2, 2,-3);
+glTexCoord(1,1); glVertex(+2,-2,-3);
+glTexCoord(0,1); glVertex(-2,-2,-3);
+glEnd();
+printg(xres-64,0,0xffffff,"%.2f fps",numframes/t);
+
+@v:vertex_shader //================================
+varying vec4 p, v, c, t;
+varying vec3 n;
+void main ()
+{
+   gl_Position = ftransform();
+   p = gl_Position;
+   v = gl_Vertex;
+   n = gl_Normal;
+   c = gl_Color;
+   t = gl_MultiTexCoord0;
+}
+
+@f:fragment_shader //================================
+varying vec4 p, v, c, t;
+varying vec3 n;
+uniform sampler2D tex0;
+uniform vec4 env[2];
+void main ()
+{
+   gl_FragColor = texture2D(tex0,t)*(0.5*sin(10.0*v.x + 0.01) + 2);
+}
