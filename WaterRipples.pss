@@ -9,7 +9,7 @@ t = klock();
 gluLookAt(0,-3, -1,0,0,-4,0,1,0);
 //gluLookAt(0,-0, 0,0,0,-3,0,1,0);
 
-
+glEnable(GL_DEPTH_TEST);
 glbindtexture(0);
 glUniform4f(time,cos(t/2),sin(t/2),t,0);
 
