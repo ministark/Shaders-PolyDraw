@@ -6,21 +6,22 @@ if (numframes == 0)
 
 t = klock();
 
-gluLookAt(0,-3, -2,0,0,-4,0,1,0);
+gluLookAt(0,-3, -1,0,0,-4,0,1,0);
 //gluLookAt(0,-0, 0,0,0,-3,0,1,0);
 
 
 glbindtexture(0);
 glUniform4f(time,cos(t/2),sin(t/2),t,0);
-nq = 100;
+
+nq = 100;w = 3;h = 3;
 for(i = 0; i < nq; i++){
    for(j = 0; j  < nq; j++){
       glBegin(GL_QUADS);
       x = i/nq; y =j/nq;d = 1/nq;
-      glTexCoord(x,y); glVertex(-2 +x*4, 2 - y*4,-3); 
-      glTexCoord(x+d, y); glVertex(-2 + x*4 + 4/nq, 2 -y*4,-3); 
-      glTexCoord(x+d,y+d); glVertex(-2 + x*4 + 4/nq, 2-y*4 -4/nq,-3); 
-      glTexCoord(x,y+d); glVertex(-2 + x*4,2-y*4-4/nq,-3); 
+      glTexCoord(x,y); glVertex(-w +x*(2*w), h - y*(2*h),-3); 
+      glTexCoord(x+d, y); glVertex(-w + x*(2*w) + (2*w)/nq, h -y*(2*h),-3); 
+      glTexCoord(x+d,y+d); glVertex(-w + x*(2*w) + (2*w)/nq, h-y*(2*h) -(2*h)/nq,-3); 
+      glTexCoord(x,y+d); glVertex(-w + x*(2*w),h-y*(2*h)-(2*h)/nq,-3); 
       glEnd();
    }
 }
@@ -34,7 +35,7 @@ uniform vec4 time;
 void main ()
 {
    float value = sqrt(gl_Vertex.x*gl_Vertex.x + gl_Vertex.y*gl_Vertex.y);
-   gl_Vertex.z += 0.08*sin(20.0*log(value+2) - 5*time.z)/(1+value);
+   gl_Vertex.z += 0.1*sin(15.0*value - 5*time.z)/(1+sqrt(value));
    gl_Position = ftransform();
    p = gl_Position;
    v = gl_Vertex;
