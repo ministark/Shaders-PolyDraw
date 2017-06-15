@@ -1,0 +1,55 @@
+   //Host code (EVAL)
+if (numframes == 0)
+{
+   glsettex(0,"water.jpg"); static time; time = glGetUniformLoc("time");
+}
+
+t = klock();
+
+gluLookAt(0,-3, -1,0,0,-4,0,1,0);
+//gluLookAt(0,-0, 0,0,0,-3,0,1,0);
+
+
+glbindtexture(0);
+glUniform4f(time,cos(t/2),sin(t/2),t,0);
+
+nq = 100;w = 3;h = 3;
+for(i = 0; i < nq; i++){
+   for(j = 0; j  < nq; j++){
+      glBegin(GL_QUADS);
+      x = i/nq; y =j/nq;d = 1/nq;
+      glTexCoord(x,y); glVertex(-w +x*(2*w), h - y*(2*h),-3); 
+      glTexCoord(x+d, y); glVertex(-w + x*(2*w) + (2*w)/nq, h -y*(2*h),-3); 
+      glTexCoord(x+d,y+d); glVertex(-w + x*(2*w) + (2*w)/nq, h-y*(2*h) -(2*h)/nq,-3); 
+      glTexCoord(x,y+d); glVertex(-w + x*(2*w),h-y*(2*h)-(2*h)/nq,-3); 
+      glEnd();
+   }
+}
+
+printg(xres-64,0,0xffffff,"%.2f fps",t);
+
+@v:vertex_shader //================================
+varying vec4 p, v, c, t;
+varying vec3 n;
+uniform vec4 time;
+void main ()
+{
+   float value = sqrt(gl_Vertex.x*gl_Vertex.x + gl_Vertex.y*gl_Vertex.y);
+   gl_Vertex.z += 0.1*sin(15.0*value - 5*time.z)/(1+sqrt(value));
+   gl_Position = ftransform();
+   p = gl_Position;
+   v = gl_Vertex;
+   n = gl_Normal;
+   c = gl_Color;
+   gl_TexCoord[0] = gl_MultiTexCoord0;
+}
+
+@f:fragment_shader //================================
+varying vec4 p, v, c, t;
+varying vec3 n;
+uniform sampler2D tex0;
+uniform vec4 time;
+void main ()
+{
+   gl_FragColor = texture2D(tex0,gl_TexCoord[0].st)*(v.z + 4);
+}
