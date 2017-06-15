@@ -6,7 +6,7 @@ if (numframes == 0)
 
 t = klock();
 
-gluLookAt(0,-4, 0,0,0,-4,0,1,0);
+gluLookAt(0,-3, -2,0,0,-4,0,1,0);
 //gluLookAt(0,-0, 0,0,0,-3,0,1,0);
 
 
@@ -34,7 +34,7 @@ uniform vec4 time;
 void main ()
 {
    float value = sqrt(gl_Vertex.x*gl_Vertex.x + gl_Vertex.y*gl_Vertex.y);
-   gl_Vertex.z += 0.05*sin(20.0*value + 5*time.z);
+   gl_Vertex.z += 0.08*sin(20.0*log(value+2) - 5*time.z)/(1+value);
    gl_Position = ftransform();
    p = gl_Position;
    v = gl_Vertex;
